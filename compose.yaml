@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: homelab-beacon:local
+    image: saadbruno/homelab-beacon:latest
     init: true
     restart: unless-stopped
     ports:

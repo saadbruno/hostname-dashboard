@@ -12,7 +12,70 @@ A small, vibe-coded, self-hosted dashboard for keeping track of dynamic IP addre
 - Online/quiet status, search, filters, detail view, and 30-second auto-refresh
 - Responsive UI with no frontend build step
 
-## Quick start with Docker Compose
+## Run the Docker Hub image
+
+You can run the published [`saadbruno/homelab-beacon:latest`](https://hub.docker.com/r/saadbruno/homelab-beacon) image without cloning this repository or building anything locally.
+
+Create an empty directory and add a `.env` file:
+
+```dotenv
+DASHBOARD_USERNAME=admin
+DASHBOARD_PASSWORD=replace-with-a-strong-password
+WEBHOOK_TOKEN=replace-with-a-long-random-token
+SESSION_SECRET=replace-with-another-long-random-secret
+
+HOST_PORT=3000
+OFFLINE_AFTER_MINUTES=15
+TRUST_PROXY=false
+SECURE_COOKIES=false
+```
+
+Generate suitable token and session-secret values with `openssl rand -hex 32`. Then create `compose.yaml` in the same directory:
+
+```yaml
+services:
+  homelab-beacon:
+    image: saadbruno/homelab-beacon:latest
+    init: true
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_PATH: /app/data/hostname-dashboard.db
+      DASHBOARD_USERNAME: "${DASHBOARD_USERNAME:?Set DASHBOARD_USERNAME in .env}"
+      DASHBOARD_PASSWORD: "${DASHBOARD_PASSWORD:?Set DASHBOARD_PASSWORD in .env}"
+      WEBHOOK_TOKEN: "${WEBHOOK_TOKEN:?Set WEBHOOK_TOKEN in .env}"
+      SESSION_SECRET: "${SESSION_SECRET:?Set SESSION_SECRET in .env}"
+      OFFLINE_AFTER_MINUTES: "${OFFLINE_AFTER_MINUTES:-15}"
+      TRUST_PROXY: "${TRUST_PROXY:-false}"
+      SECURE_COOKIES: "${SECURE_COOKIES:-false}"
+    volumes:
+      - beacon-data:/app/data
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  beacon-data:
+```
+
+Start it:
+
+```bash
+docker compose up -d
+```
+
+Docker pulls the image automatically. Open `http://localhost:3000`, or use the port configured with `HOST_PORT`. SQLite is stored in the persistent `beacon-data` volume.
+
+To update to the newest image later:
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+## Build from source with Docker Compose
 
 ```bash
 cp .env.example .env
