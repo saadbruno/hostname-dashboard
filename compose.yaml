@@ -1,0 +1,28 @@
+services:
+  homelab-beacon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: homelab-beacon:local
+    init: true
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_PATH: /app/data/hostname-dashboard.db
+      DASHBOARD_USERNAME: "${DASHBOARD_USERNAME:?Set DASHBOARD_USERNAME in .env}"
+      DASHBOARD_PASSWORD: "${DASHBOARD_PASSWORD:?Set DASHBOARD_PASSWORD in .env}"
+      WEBHOOK_TOKEN: "${WEBHOOK_TOKEN:?Set WEBHOOK_TOKEN in .env}"
+      SESSION_SECRET: "${SESSION_SECRET:?Set SESSION_SECRET in .env}"
+      OFFLINE_AFTER_MINUTES: "${OFFLINE_AFTER_MINUTES:-15}"
+      TRUST_PROXY: "${TRUST_PROXY:-false}"
+      SECURE_COOKIES: "${SECURE_COOKIES:-false}"
+    volumes:
+      - beacon-data:/app/data
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  beacon-data:

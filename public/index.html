@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f2e9">
+    <title>Homelab Beacon</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+
+    <main id="login-view" class="login-shell">
+      <section class="login-intro">
+        <a class="brand brand-large" href="/" aria-label="Homelab Beacon home">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+          <span>homelab<br>beacon</span>
+        </a>
+
+        <div class="intro-copy">
+          <div class="eyebrow"><span class="pulse-dot"></span> SIGNALS, SORTED</div>
+          <h1>Every little server,<br><em>still in sight.</em></h1>
+          <p>A cheerful home base for the addresses and vital signs of all the machines hiding in your homelab.</p>
+        </div>
+
+        <div class="signal-sketch" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="beacon-core">⌁</div>
+          <span class="spark spark-one">✦</span>
+          <span class="spark spark-two">✦</span>
+          <span class="signal-label">ping!</span>
+        </div>
+      </section>
+
+      <section class="login-panel">
+        <form id="login-form" class="login-card">
+          <div class="card-sticker" aria-hidden="true">PRIVATE<br>NETWORK</div>
+          <p class="kicker">WELCOME BACK, OPERATOR</p>
+          <h2>Turn on the radar.</h2>
+          <p class="muted">Sign in to check on your fleet.</p>
+
+          <label for="username">Username</label>
+          <div class="input-wrap">
+            <span aria-hidden="true">@</span>
+            <input id="username" name="username" type="text" autocomplete="username" placeholder="operator" required autofocus>
+          </div>
+
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <span aria-hidden="true">•</span>
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••••••" required>
+            <button id="toggle-password" class="icon-button" type="button" aria-label="Show password">eye</button>
+          </div>
+
+          <p id="login-error" class="form-error" role="alert" hidden></p>
+          <button class="primary-button" type="submit">
+            <span>Open dashboard</span><span aria-hidden="true">↗</span>
+          </button>
+          <p class="privacy-note"><span aria-hidden="true">⌾</span> Your credentials never leave this server.</p>
+        </form>
+      </section>
+    </main>
+
+    <div id="dashboard-view" class="dashboard" hidden>
+      <header class="topbar">
+        <a class="brand" href="/">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>homelab<br>beacon</span>
+        </a>
+        <div class="topbar-right">
+          <span id="last-updated" class="last-updated">Waiting for signal…</span>
+          <span id="operator-name" class="operator-chip"></span>
+          <button id="logout-button" class="secondary-button" type="button">Log out <span aria-hidden="true">↗</span></button>
+        </div>
+      </header>
+
+      <main class="dashboard-main">
+        <section class="dashboard-heading">
+          <div>
+            <div class="eyebrow"><span class="pulse-dot"></span> LIVE NETWORK</div>
+            <h1>Your tiny corner<br>of the <em>internet.</em></h1>
+          </div>
+          <p>Fresh coordinates and vital signs from every machine that calls home.</p>
+        </section>
+
+        <section id="summary-grid" class="summary-grid" aria-label="Network summary">
+          <article class="summary-card summary-primary">
+            <span class="summary-icon">⌂</span>
+            <div><strong id="host-count">0</strong><span>KNOWN HOSTS</span></div>
+            <span class="scribble">in the fleet</span>
+          </article>
+          <article class="summary-card">
+            <span class="summary-icon online-icon">●</span>
+            <div><strong id="online-count">0</strong><span>ONLINE NOW</span></div>
+            <span id="online-percent" class="summary-note">0% reporting</span>
+          </article>
+          <article class="summary-card">
+            <span class="summary-icon quiet-icon">◒</span>
+            <div><strong id="offline-count">0</strong><span>GONE QUIET</span></div>
+            <span class="summary-note">needs a peek</span>
+          </article>
+          <article class="summary-card">
+            <span class="summary-icon load-icon">⌁</span>
+            <div><strong id="average-load">—</strong><span>AVERAGE LOAD</span></div>
+            <span class="summary-note">across reporters</span>
+          </article>
+        </section>
+
+        <section class="fleet-section">
+          <div class="fleet-title-row">
+            <div>
+              <p class="kicker">THE FLEET</p>
+              <h2>Latest check-ins</h2>
+            </div>
+            <div class="controls">
+              <label class="search-box">
+                <span aria-hidden="true">⌕</span>
+                <span class="sr-only">Search hosts</span>
+                <input id="search-input" type="search" placeholder="Find a machine…">
+              </label>
+              <div class="filter-group" aria-label="Filter hosts">
+                <button class="filter-button active" type="button" data-filter="all">All</button>
+                <button class="filter-button" type="button" data-filter="online">Online</button>
+                <button class="filter-button" type="button" data-filter="offline">Quiet</button>
+              </div>
+              <button id="refresh-button" class="refresh-button" type="button" title="Refresh hosts" aria-label="Refresh hosts">↻</button>
+            </div>
+          </div>
+
+          <div id="host-grid" class="host-grid"></div>
+          <div id="empty-state" class="empty-state" hidden>
+            <div class="empty-radar"><span></span></div>
+            <h3 id="empty-title">No signals yet</h3>
+            <p id="empty-copy">Send your first webhook and a host will pop up right here.</p>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <span>HOMELAB BEACON <i>✦</i> KEEPING TABS SINCE RIGHT NOW</span>
+        <span>Auto-refreshes every 30 seconds</span>
+      </footer>
+    </div>
+
+    <dialog id="host-dialog" class="host-dialog">
+      <button id="dialog-close" class="dialog-close" type="button" aria-label="Close">×</button>
+      <div id="dialog-content"></div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
