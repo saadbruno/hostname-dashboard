@@ -155,6 +155,7 @@ Unknown JSON fields are preserved as custom metadata and shown in the host detai
 [examples/report.sh](examples/report.sh) gathers common Linux health information. It requires `curl` and `jq`; its public-IP lookups use ipify. Copy it onto each host and make it executable:
 
 ```bash
+wget https://raw.githubusercontent.com/saadbruno/hostname-dashboard/refs/heads/main/examples/report.sh
 chmod +x report.sh
 BEACON_URL=https://beacon.example.com \
 BEACON_TOKEN=YOUR_WEBHOOK_TOKEN \
@@ -165,9 +166,9 @@ HOST_LABEL=pve-01.home \
 For cron, place the secrets in a root-readable environment file, for example `/etc/homelab-beacon.env`:
 
 ```bash
-BEACON_URL=https://beacon.example.com
-BEACON_TOKEN=YOUR_WEBHOOK_TOKEN
-HOST_LABEL=pve-01.home
+export BEACON_URL=https://beacon.example.com
+export BEACON_TOKEN=YOUR_WEBHOOK_TOKEN
+export HOST_LABEL=pve-01.home
 ```
 
 Then add a job with `crontab -e`:
